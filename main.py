@@ -1,4 +1,5 @@
 import math
+import re #implemented to help me search of ID's due to their unique syntax
 import pandas as pd 
 df = pd.read_excel(
     "data/Call-Center-Sentiment-Sample-Data.xlsx",
@@ -15,7 +16,7 @@ print("Type 'help' for list of commands.\n")
 while True:
     look = input("Enter a Valid Command: ").strip().lower()
 
-    if look == "help":
+    if look == "help": #Displays basic help page
         print("help - command page")
         print()
         print("show - displays table data by page")
@@ -26,7 +27,8 @@ while True:
         print()
         print("end - end program\n")
 
-    elif look == "show":
+
+    elif look == "show": #shows the first 10 entries of data set allowing you to cycle through and select specific pages
         current_page = 0
         total_pages = math.ceil(len(df) / page_size)
 
@@ -70,25 +72,78 @@ while True:
         
 
     elif look == "sentiment":
-        #counts amount of each given senitment type
-        ver_pos = len(df[df["Sentiment"] == "Very Positive"]) #alternativly could use:  ver_pos = (df["Sentiment"] == "Very Positive").sum()
-        pos = len(df[df["Sentiment"] == "Positive"]) 
-        neut = len(df[df["Sentiment"] == "Neutral"]) 
-        neg = len(df[df["Sentiment"] == "Negative"]) 
-        ver_neg = len(df[df["Sentiment"] == "Very Negative"]) 
+        while True:
+            print("\n=== Sentiment Menu ===")
+            print("1. Overall Sentiment Summary")
+            print("2. Call Center Sentiment Report")
+            print("3. Return to Main Menu\n")
 
-        sentiments = df["Sentiment"].value_counts()
+            section = input("Select an option to view: ").strip()
+            print("")
 
-        print(sentiments)
+
+            if section == "1":
+
+                print("\nSentiment Summary")
+                print("-----------------------")
+
+                total = len(df)
+                for sentiment, count in df["Sentiment"].value_counts().items():
+                    percent = (count / total) * 100
+                    print(f"{sentiment:<15}: {count:>3} - ({percent:.2f}%)")
+
+
+            elif section == "2":
+                while True:
+                    call_center = input("Enter call center location: ").strip()
+                    print("")
+
+                    if len(call_center) == 2:
+
+                        location = df[
+                            (df["Call Center"].str.split("/").str[1].str.upper() == call_center.upper())   
+                        ]
+                    else:
+                        location = df[
+                            df["Call Center"].str.split("/").str[0].str.contains(call_center, case=False, na=False)
+                        ]
+
+                    if location.empty:
+                        print("No Call Center in city/state, try again.")
+                        print("")
+
+                    else:
+                        total = len(location)
+                        for sentiment, count in location["Sentiment"].value_counts().items():
+                            percent = (count / total) * 100
+                            print(f"{sentiment:<15}: {count:>3} - ({percent:.2f}%)")
+
+
+
+                        break
+
+            
+            elif section == "3":
+                break
+
+            else:
+                print("Invalid Option, Try Again")
+
+            print("")
+            cont = input("Press enter to continue.")
 
 
     elif look == "search":
-        customer = df[["Customer Name", "ID"]]
+        cx = input("Enter customer name or ID: ").strip()
 
-        for index, row in customer.iterrows(): 
-            name = row["Customer Name"]
-            customer_id = row["ID"] 
-    
-            print(name) 
-            print(customer_id) 
-            print()
+        if re.fullmatch(r"[A-za-z]{3}-\d{8}", cx): #checks for it to contain 3 letters of any capitalization, a dash, and then exactly 8 numbers as per the syntax of the ID's
+            result = df[df["ID"].str.upper() == cx.upper()]
+        
+        else:
+            result = df[df["Customer Name"].str.contains(cx, case=False, na=False)] #case=False ignores capitalization when searching dataframe / na=False has it ignore cases of NaN
+
+        if result.empty:
+            print("No Customer Found.\n")
+        
+        else:
+            print(result.to_string(index=False))

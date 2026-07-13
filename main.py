@@ -30,37 +30,41 @@ while True:
 
     elif look == "show": #shows the first 10 entries of data set allowing you to cycle through and select specific pages
         current_page = 0
-        total_pages = math.ceil(len(df) / page_size)
+        total_pages = math.ceil(len(df) / page_size) #calculates the amount of pages in dataset  by 10 per page
 
         while True:
             start = current_page * page_size
             end = start + page_size
 
-            print(f"\nPage {current_page + 1} of {total_pages}")
+            print(f"\nPage {current_page + 1} of {total_pages}") # says what page of the data is currently being viewed
             print(df.iloc[start:end].to_string(index=False))
 
-            page = input("[n]next, [p]previous, [s]search, or exit\n").strip().lower()
+            page = input("[n]next, [p]previous, [s]search, or exit\n").strip().lower() #navigation between the different pages
 
-            if page == "n":
+            if page == "n": #adds 1 to page count to display the next subsequent set of data
                 if current_page < total_pages - 1:
                     current_page += 1
                 else:
                     print("On Last Page")
 
-            elif page == "p":
+            elif page == "p": #subtracts 1 to page count to display the next subsequent set of data
                 if current_page > 0:
                     current_page -= 1
                 else:
                     print("On First Page")
 
-            elif page =="s":
-                num_page = int(input(f"enter a page number from 1 to {total_pages}\n"))
+            elif page =="s": #allows the user to go to a specific page
+                try: #stops error from occuring when user inputs non number
+                    num_page = int(input(f"enter a page number from 1 to {total_pages}\n"))
+                except ValueError:
+                    print("please enter a VALID NUMBER.")
+                    continue
 
-                if num_page < 0:
+                if num_page <= 0: #sets the page to the 1st page when trying to set page to a negative or 0
                     num_page = 1
 
-                elif num_page > total_pages:
-                    num_page = 7
+                elif num_page > total_pages: #sets page to last page when trying to input a big number
+                    num_page = total_pages
 
                 current_page = num_page - 1
 
@@ -68,7 +72,8 @@ while True:
                 break
 
             else:
-                print("Enter Valid Navigation")
+                print("Enter Valid Navigation\n")
+                cont = input("Press enter to continue.")
         
 
     elif look == "sentiment":
@@ -87,10 +92,10 @@ while True:
                 print("\nSentiment Summary")
                 print("-----------------------")
 
-                total = len(df)
-                for sentiment, count in df["Sentiment"].value_counts().items():
-                    percent = (count / total) * 100
-                    print(f"{sentiment:<15}: {count:>3} - ({percent:.2f}%)")
+                total = len(df) #gets the length of the data
+                for sentiment, count in df["Sentiment"].value_counts().items(): #counts the amount of each type of sentiment in the data frame to use for later
+                    percent = (count / total) * 100 #uses the previous info to calculate the percent of how often a certaion sentiment appears
+                    print(f"{sentiment:<15}: {count:>3} - ({percent:.2f}%)") #formating of info to make readable 
 
 
             elif section == "2":
@@ -98,12 +103,13 @@ while True:
                     call_center = input("Enter call center location: ").strip()
                     print("")
 
-                    if len(call_center) == 2:
+                    #This is done so when search "CA" i get only california and not chicago that has a "ca" in its spelling
+                    if len(call_center) == 2: #when its 2 letters it is only looking at the state abbreviation and not city spelling
 
                         location = df[
                             (df["Call Center"].str.split("/").str[1].str.upper() == call_center.upper())   
                         ]
-                    else:
+                    else: #searches the entire city spelling
                         location = df[
                             df["Call Center"].str.split("/").str[0].str.contains(call_center, case=False, na=False)
                         ]
@@ -113,12 +119,10 @@ while True:
                         print("")
 
                     else:
-                        total = len(location)
+                        total = len(location) #shows the data for the specific location based on where the user wanted to search for
                         for sentiment, count in location["Sentiment"].value_counts().items():
                             percent = (count / total) * 100
                             print(f"{sentiment:<15}: {count:>3} - ({percent:.2f}%)")
-
-
 
                         break
 
@@ -139,11 +143,18 @@ while True:
         if re.fullmatch(r"[A-za-z]{3}-\d{8}", cx): #checks for it to contain 3 letters of any capitalization, a dash, and then exactly 8 numbers as per the syntax of the ID's
             result = df[df["ID"].str.upper() == cx.upper()]
         
-        else:
+        else: #still searches bgut by name this time not ID
             result = df[df["Customer Name"].str.contains(cx, case=False, na=False)] #case=False ignores capitalization when searching dataframe / na=False has it ignore cases of NaN
 
         if result.empty:
             print("No Customer Found.\n")
         
-        else:
+        else: #shows info of person found based on search parameters
             print(result.to_string(index=False))
+
+    elif look == "end":
+        break #ends the program
+
+    else:
+        print("")
+        print("Please Enter a valid Command, type 'help' for list of commands.")

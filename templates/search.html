@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+	<head>
+		<Title>Call Center Data</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='Styles.css') }}">
+	</head>
+
+	<body>
+		<div id="wrapper">
+
+		<header> 
+			<h1>Customer Data</h1>
+
+			<button class="hamburger" onclick="toggleMenu()">
+				☰
+			</button> 
+			
+			<nav id="navMenu">
+				<a href="/">Home</a>
+				<a href="/show">Customer List</a>
+				<a href="/sentiment">Customer Sentiment</a>
+				<a href="/search">Customer Search</a>
+			</nav>
+		</header>
+
+		
+
+	<main>
+		<h2>Welcome, User</h2>
+		<p>
+
+		</p>
+	</main>
+
+	<footer>
+	</footer>
+	
+		</div>
+
+		<script>
+		function toggleMenu() {
+    		document.getElementById("navMenu").classList.toggle("show");
+		}
+		</script>
+	</body>
+</html>

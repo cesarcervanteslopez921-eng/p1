@@ -23,13 +23,52 @@
 			</nav>
 		</header>
 
-		
-
 	<main>
-		<h2>Welcome, User</h2>
-		<p>
+		<h2>Customer Index</h2>
 
-		</p>
+		<table>
+			<thead>
+				<tr>
+					{% for column in rows[0].keys() %}
+                		<th>{{ column }}</th>
+            		{% endfor %}
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for row in rows %}
+				<tr>
+					{% for value in row.values() %}
+						<td>{{ value }}</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="pagination">
+
+			{% if current_page > 1 %}
+				<a href="/show?page={{ 1 }}"><<</a>
+			{% endif %}
+
+
+			{% if current_page > 1 %}
+				<a href="/show?page={{ current_page - 1 }}"><</a>
+			{% endif %}
+
+
+			Page {{ current_page }} of {{ total_pages }}
+
+
+			{% if current_page < total_pages %}
+				<a href="/show?page={{ current_page + 1 }}">></a>
+			{% endif %}
+
+			{% if current_page < total_pages %}
+				<a href="/show?page={{ [current_page + 5, total_pages] | min }}">>></a>
+			{% endif %}
+			
+		</div>
 	</main>
 
 	<footer>

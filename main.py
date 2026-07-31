@@ -1,7 +1,7 @@
 import math
 import re #implemented to help me search of ID's due to their unique syntax
 import pandas as pd
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -39,7 +39,18 @@ def home():
 
 @app.route("/show")
 def show():
-        return render_template("show.html")
+        current_page = request.args.get("page", default=1, type=int)
+        total_pages = math.ceil(len(df) / page_size)
+
+        start = (current_page - 1 ) * page_size
+        end = start + page_size
+
+        rows = df.iloc[start:end].to_dict(orient="records") # used to convert the rows into a dictionary that html understands
+        
+
+
+        return render_template("show.html", rows=rows, current_page=current_page, total_pages=total_pages)
+
 #     elif look == "show": #shows the first 10 entries of data set allowing you to cycle through and select specific pages
 #         current_page = 0
 #         total_pages = math.ceil(len(df) / page_size) #calculates the amount of pages in dataset  by 10 per page

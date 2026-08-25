@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<Title>Call Center Data</title>
+		<Title>Customer Sentiments</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='Styles.css') }}">
 	</head>
 
@@ -9,7 +9,7 @@
 		<div id="wrapper">
 
 		<header> 
-			<h1>Customer Data</h1>
+			<h1>Customer Sentiment</h1>
 
 			<button class="hamburger" onclick="toggleMenu()">
 				☰
@@ -26,10 +26,79 @@
 		
 
 	<main>
-		<h2>Welcome, User</h2>
-		<p>
+		<h2>Sentiment Summary</h2>
 
-		</p>
+		<table>
+            <tr>
+                <th>Sentiment</th>
+                <th>Count</th>
+                <th>Percentage</th>
+            </tr>
+
+            {% for item in sentiment_data %}
+            <tr>
+                <td>{{ item.sentiment }}</td>
+                <td>{{ item.count }}</td>
+                <td>{{ "%.2f"|format(item.percent) }}%</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+
+		<h2>Call Center Sentiment Report</h2>
+
+		<form method="GET" action="/sentiment"> 
+
+			<label for="location">Call Center: </label>
+
+			<input
+			type="text"
+			id="location"
+			name="location"
+			placeholder="Los Angeles or CA"
+			value="{{ search_location}}"
+			>
+
+			<button type="submit">Search</button>
+
+
+		</form>
+		
+
+		{% if location_error %}
+
+    		<p>{{ location_error }}</p>
+
+		{% endif %}
+
+
+		{% if location_data %}
+
+    		<h3>Sentiment for {{ search_location }}</h3>
+
+    		<table>
+
+        		<tr>
+            		<th>Sentiment</th>
+            		<th>Count</th>
+            		<th>Percentage</th>
+        		</tr>
+
+        		{% for item in location_data %}
+
+        		<tr>
+            		<td>{{ item.sentiment }}</td>
+           			<td>{{ item.count }}</td>
+            		<td>{{ "%.2f"|format(item.percent) }}%</td>
+        		</tr>
+
+        		{% endfor %}
+
+    		</table>
+
+		{% endif %}
+		
 	</main>
 
 	<footer>

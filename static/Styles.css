@@ -68,6 +68,11 @@
 		color:#F5F5F5;
 		padding-left:15px;
 		font-Family: "Serif";}
+
+	h3 {
+		color:#F5F5F5;
+		padding-left:15px;
+		font-Family: "Serif";}
 	
 	p {
 		color:#F5F5F5;
@@ -104,15 +109,25 @@
     	border-bottom:1px solid #ddd;}
 
 	tr:hover{
-    	background:#dbe8ff;}
-			
-	Footer {border:2px solid;
-			background-color:#293462;
-			padding: 0px 0px 0px 0px;
-			margin: 0px;
-			height:auto;}
+    	background:#abcafc;}
+	
+	label {
+		margin-left: 20px;
+		color:#F5F5F5;
+	}
 
-	Footer A {text-decoration:none;
+	button {
+		margin-bottom: 20px;}
+			
+	Footer {
+		border:2px solid;
+		background-color:#293462;
+		padding: 0px 0px 0px 0px;
+		margin: 0px;
+		height:auto;}
+
+	Footer A {
+		text-decoration:none;
 		color:#F5F5F5;}
 
 	Footer a:hover {color:#7f39db;}

@@ -101,7 +101,46 @@ def show():
 
 @app.route("/sentiment")
 def sentiment():
-        return render_template("sentiment.html")
+
+        total = len(df)
+
+        sentiment_data = []
+
+        for sentiment, count in df ["Sentiment"].value_counts().items():
+                percent = (count / total) * 100
+
+                sentiment_data.append({ "sentiment": sentiment, "count": count, "percent": percent })
+
+
+        call_center = request.args.get("location", "").strip()
+
+        location_data = []
+        location_error = ""
+
+        if call_center:
+                if len(call_center) == 2:
+                        location = df [df["Call Center"].str.split("/").str[1].str.upper() == call_center.upper()]
+
+                else:
+                        location = df [df["Call Center"].str.split("/").str[0].str.contains(call_center, case=False, na=False)]
+
+
+                if location.empty:
+                        location_error = "No Call Center in city/state, try again."
+
+                else:
+                        total_location = len(location)
+
+                        for sentiment, count in location["Sentiment"].value_counts().items():
+
+                                percent = (count / total_location) * 100
+
+                                location_data.append({ "sentiment": sentiment, "count": count, "percent": percent})
+
+
+
+        return render_template("sentiment.html", sentiment_data=sentiment_data, location_data=location_data, location_error=location_error, search_location=call_center)
+
 #     elif look == "sentiment":
 #         while True:
 #             print("\n=== Sentiment Menu ===")

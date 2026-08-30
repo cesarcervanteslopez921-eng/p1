@@ -204,7 +204,21 @@ def sentiment():
 
 @app.route("/search")
 def search():
-        return render_template("search.html")
+
+        cx = request.args.get("customer", "").strip()
+
+        result = None
+
+        if cx:
+                if re.fullmatch(r"[A-za-z]{3}-\d{8}", cx):
+                        result = df[df["ID"].str.upper() == cx.upper()]
+
+                else:
+                        result = df[df["Customer Name"].str.contains(cx, case=False, na=False)]
+
+        return render_template("search.html", result=result, search_customer=cx)
+
+
 #     elif look == "search":
 #         cx = input("Enter customer name or ID: ").strip()
 
@@ -224,8 +238,8 @@ def search():
 #         break #ends the program
 
 #     else:
-        print("")
-        print("Please Enter a valid Command, type 'help' for list of commands.")
+#        print("")
+#        print("Please Enter a valid Command, type 'help' for list of commands.")
 
 
 if __name__ == "__main__":

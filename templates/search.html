@@ -26,11 +26,60 @@
 		
 
 	<main>
-		<h2>Welcome, User</h2>
-		<p>
 
-		</p>
-	</main>
+    <h2>Customer Search</h2>
+
+    <form method="GET" action="/search">
+        <label for="customer">Customer Name or ID:</label>
+        <input
+            type="text"
+            id="customer"
+            name="customer"
+            placeholder="Enter name or ID"
+            value="{{ search_customer }}"
+        >
+
+        <button type="submit" class="search-button">
+            Search
+        </button>
+    </form>
+
+
+    {% if result is not none %}
+
+        {% if result.empty %}
+
+            <p>No Customer Found.</p>
+
+        {% else %}
+
+            <h3>Search Results</h3>
+
+            <table>
+
+                <tr>
+                    {% for column in result.columns %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+
+                {% for index, row in result.iterrows() %}
+
+                    <tr>
+                        {% for column in result.columns %}
+                            <td>{{ row[column] }}</td>
+                        {% endfor %}
+                    </tr>
+
+                {% endfor %}
+
+            </table>
+
+        {% endif %}
+
+    {% endif %}
+
+</main>
 
 	<footer>
 	</footer>
